@@ -68,6 +68,14 @@ def encrypted_predict(encrypted_features):
     
     return encrypted_result
 
+
+# Function to classify risk (client-side)
+def classify_risk(score):
+    if score > 0:
+        return "High Risk (Likely heart disease)"
+    else:
+        return "Low Risk (Likely no heart disease)"
+
 def main():
     print("Sample of original data:")
     sample_data = X.head(5)
@@ -88,5 +96,8 @@ def main():
         
         # Decrypt the result
         decrypted_prediction = private_key.decrypt(encrypted_prediction)
-        
+
+        # Evaluate the risk
+        risk_assessment = classify_risk(decrypted_prediction)
         print(f"Patient {i}: {decrypted_prediction:.4f}")
+        print(f"Risk assessment: {risk_assessment}\n")

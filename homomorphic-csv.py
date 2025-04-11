@@ -63,25 +63,40 @@ def encrypted_predict(encrypted_features):
     
     return encrypted_result
 
-# Example usage
-print("Sample of original data:")
-sample_data = X.head(5)
-print(sample_data)
+# Function to classify risk (client-side)
+def classify_risk(score):
+    if score > 0:
+        return "High Risk (Likely heart disease)"
+    else:
+        return "Low Risk (Likely no heart disease)"
 
-print("\nPredictions on plaintext data:")
-for i, row in sample_data.iterrows():
-    prediction = predict(row)
-    print(f"Patient {i}: {prediction:.4f}")
+def main():
+    # Example usage
+    print("Sample of original data:")
+    sample_data = X.head(5)
+    print(sample_data)
 
-print("\nPredictions using homomorphic encryption:")
-for i, row in sample_data.iterrows():
-    # Encrypt the features
-    encrypted_row = encrypt_features(row)
-    
-    # Make prediction on encrypted data
-    encrypted_prediction = encrypted_predict(encrypted_row)
-    
-    # Decrypt the result
-    decrypted_prediction = private_key.decrypt(encrypted_prediction)
-    
-    print(f"Patient {i}: {decrypted_prediction:.4f}")
+    print("\nPredictions on plaintext data:")
+    for i, row in sample_data.iterrows():
+        prediction = predict(row)
+        print(f"Patient {i}: {prediction:.4f}")
+
+    print("\nPredictions using homomorphic encryption:")
+    for i, row in sample_data.iterrows():
+        # Encrypt the features
+        encrypted_row = encrypt_features(row)
+        
+        # Make prediction on encrypted data
+        encrypted_prediction = encrypted_predict(encrypted_row)
+        
+        # Decrypt the result
+        decrypted_prediction = private_key.decrypt(encrypted_prediction)
+        
+        # Evaluate the risk
+        risk_assessment = classify_risk(decrypted_prediction)
+        print(f"Patient {i}: {decrypted_prediction:.4f}")
+        print(f"Risk assessment: {risk_assessment}\n")
+
+
+if __name__=="__main__":
+    main()
