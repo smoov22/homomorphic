@@ -97,6 +97,23 @@ def main():
         print(f"Patient {i}: {decrypted_prediction:.4f}")
         print(f"Risk assessment: {risk_assessment}\n")
 
+    
+    #Full CSV creation
+    print("Processing all rows for final CSV output...")
+    result_df = X.copy()  # Use the entire dataset
+    risk_assessments = []
+    
+    for i, row in X.iterrows():
+        prediction = predict(row)
+        risk_assessment = "High Risk" if prediction > 0 else "Low Risk"
+        risk_assessments.append(risk_assessment)
+    
+    result_df['risk'] = risk_assessments
+    
+    # Save to CSV
+    result_df.to_csv('heart_risk_assessment_full.csv', index=False)
+    print(f"Saved risk assessment results for all {len(X)} rows to 'heart_risk_assessment_full.csv'")
+
 
 if __name__=="__main__":
     main()
