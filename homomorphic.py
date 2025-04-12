@@ -119,5 +119,30 @@ def main():
     result_df.to_csv('heart_risk_assessment_full.csv', index=False)
     print(f"Saved risk assessment results for all {len(X)} rows to 'heart_risk_assessment_full.csv'")
 
+    # Now do it again for the encrypted items
+    print("Processing all rows with encrypted predictions for final CSV output...")
+    result_df = X.copy()
+    risk_assessments = []
+    
+    for i, row in X.iterrows():
+        # Encrypt the features
+        encrypted_row = encrypt_features(row)
+        
+        # Make prediction on encrypted data
+        encrypted_prediction = encrypted_predict(encrypted_row)
+        
+        # Decrypt the result
+        decrypted_prediction = private_key.decrypt(encrypted_prediction)
+        
+        # Evaluate the risk
+        risk_assessment = "High Risk" if decrypted_prediction > 0 else "Low Risk"
+        risk_assessments.append(risk_assessment)
+    
+    result_df['risk'] = risk_assessments
+    
+    # Save to CSV
+    result_df.to_csv('heart_risk_assessment_encrypted.csv', index=False)
+    print(f"Saved ENCRYPTED risk assessment results for all {len(X)} rows")
+
 if __name__=="__main__":
     main()
